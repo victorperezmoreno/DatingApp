@@ -1,5 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { User } from './_models/user';
+import { AccountService } from './_services/account.service';
 
 @Component({
   selector: 'app-root',
@@ -8,21 +9,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit{
   title = 'The Dating App';
-  users : any;
   // To get data from API we need httpclient
-  constructor(private http:HttpClient) {}
+  constructor(private accountService: AccountService) {}
   
   ngOnInit() {
-   this.getUsers();  
-  }
-  //Observer pattern
-  getUsers() {
-    this.http.get('https://localhost:5001/api/users').subscribe({
-      next: response => this.users = response,
-      error: error => console.log(error)
-    })
+   //this.getUsers(); 
+   this.setCurrentUser(); 
   }
 
+  setCurrentUser() {
+    const user: User = JSON.parse(localStorage.getItem('user'))
+    //If we get any error, we can use the below code, as it is the same as
+    //the above
+    // const userstring = localStorage.getItem('user');
+    // if (!userstring) return;
+    // const userTemp : User = JSON.parse(userstring);
+    this.accountService.setCurrentUser(user);
+
+  }
   // getUsers()
   // {
   //   this.http.get('https://localhost:5001/api/users').subscribe(response => {
